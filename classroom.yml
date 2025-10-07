@@ -1,0 +1,143 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Testing getting car details
+      id: testing-getting-car-details
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing getting car details
+        setup-command: sudo apt install temurin-21-jdk && sudo update-java-alternatives
+          --set temurin-21-jdk-amd64 && java --version && javac --version && mvn --version
+          && mvn compile
+        command: mvn test -Dtest=CarTest#testGetCarDetails
+        timeout: 10
+        max-score: 10
+    - name: Testing getting car details and testing equals() used in unit tests
+      id: testing-getting-car-details-and-testing-equals-used-in-unit-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing getting car details and testing equals() used in unit tests
+        setup-command: ''
+        command: mvn test -Dtest=CarTest#testGetCarDetailsWithCarEqualsVersion
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Car, 6 months'
+      id: testing-polymorphism-car-6-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Car, 6 months'
+        setup-command: ''
+        command: mvn test -Dtest=CarTest#carSetFeeSixMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: Testing setting fee for car - 6 months
+      id: testing-setting-fee-for-car-6-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing setting fee for car - 6 months
+        setup-command: ''
+        command: mvn test -Dtest=CarTest#testSetFeeCarSixMths
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Car, 12 months'
+      id: testing-polymorphism-car-12-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Car, 12 months'
+        setup-command: ''
+        command: mvn test -Dtest=CarTest#carSetFeeTwelveMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Car, invalid number of months'
+      id: testing-polymorphism-car-invalid-number-of-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Car, invalid number of months'
+        setup-command: ''
+        command: mvn test -Dtest=CarTest#carSetFeeInvalidMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: Testing setting fee for Truck - 6 months
+      id: testing-setting-fee-for-truck-6-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing setting fee for Truck - 6 months
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#testSetFeeTruckSixMths
+        timeout: 10
+        max-score: 10
+    - name: Testing getting truck details
+      id: testing-getting-truck-details
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing getting truck details
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#testGetTruckDetails
+        timeout: 10
+        max-score: 10
+    - name: Testing getting truck details and testing equals() used in unit tests
+      id: testing-getting-truck-details-and-testing-equals-used-in-unit-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Testing getting truck details and testing equals() used in unit
+          tests
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#testGetTruckDetailsWithTruckEqualsVersion
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Truck, 6 months'
+      id: testing-polymorphism-truck-6-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Truck, 6 months'
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#truckSetFeeSixMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Truck, 12 months'
+      id: testing-polymorphism-truck-12-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Truck, 12 months'
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#truckSetFeeTwelveMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: 'Testing Polymorphism: Truck, invalid number of months'
+      id: testing-polymorphism-truck-invalid-number-of-months
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: 'Testing Polymorphism: Truck, invalid number of months'
+        setup-command: ''
+        command: mvn test -Dtest=TruckTest#truckSetFeeInvalidMonthsAndPolymorphismTest
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TESTING-GETTING-CAR-DETAILS_RESULTS: "${{steps.testing-getting-car-details.outputs.result}}"
+        TESTING-GETTING-CAR-DETAILS-AND-TESTING-EQUALS-USED-IN-UNIT-TESTS_RESULTS: "${{steps.testing-getting-car-details-and-testing-equals-used-in-unit-tests.outputs.result}}"
+        TESTING-POLYMORPHISM-CAR-6-MONTHS_RESULTS: "${{steps.testing-polymorphism-car-6-months.outputs.result}}"
+        TESTING-SETTING-FEE-FOR-CAR-6-MONTHS_RESULTS: "${{steps.testing-setting-fee-for-car-6-months.outputs.result}}"
+        TESTING-POLYMORPHISM-CAR-12-MONTHS_RESULTS: "${{steps.testing-polymorphism-car-12-months.outputs.result}}"
+        TESTING-POLYMORPHISM-CAR-INVALID-NUMBER-OF-MONTHS_RESULTS: "${{steps.testing-polymorphism-car-invalid-number-of-months.outputs.result}}"
+        TESTING-SETTING-FEE-FOR-TRUCK-6-MONTHS_RESULTS: "${{steps.testing-setting-fee-for-truck-6-months.outputs.result}}"
+        TESTING-GETTING-TRUCK-DETAILS_RESULTS: "${{steps.testing-getting-truck-details.outputs.result}}"
+        TESTING-GETTING-TRUCK-DETAILS-AND-TESTING-EQUALS-USED-IN-UNIT-TESTS_RESULTS: "${{steps.testing-getting-truck-details-and-testing-equals-used-in-unit-tests.outputs.result}}"
+        TESTING-POLYMORPHISM-TRUCK-6-MONTHS_RESULTS: "${{steps.testing-polymorphism-truck-6-months.outputs.result}}"
+        TESTING-POLYMORPHISM-TRUCK-12-MONTHS_RESULTS: "${{steps.testing-polymorphism-truck-12-months.outputs.result}}"
+        TESTING-POLYMORPHISM-TRUCK-INVALID-NUMBER-OF-MONTHS_RESULTS: "${{steps.testing-polymorphism-truck-invalid-number-of-months.outputs.result}}"
+      with:
+        runners: testing-getting-car-details,testing-getting-car-details-and-testing-equals-used-in-unit-tests,testing-polymorphism-car-6-months,testing-setting-fee-for-car-6-months,testing-polymorphism-car-12-months,testing-polymorphism-car-invalid-number-of-months,testing-setting-fee-for-truck-6-months,testing-getting-truck-details,testing-getting-truck-details-and-testing-equals-used-in-unit-tests,testing-polymorphism-truck-6-months,testing-polymorphism-truck-12-months,testing-polymorphism-truck-invalid-number-of-months
